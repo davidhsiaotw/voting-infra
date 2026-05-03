@@ -26,3 +26,13 @@ module "rds" {
   private_subnet_ids = module.vpc.private_subnet_ids
   eks_nodes_sg_id    = module.eks.cluster_security_group_id
 }
+
+module "ecr" {
+  source = "./modules/ecr"
+  project_name = var.project_name
+}
+
+module "dns" {
+  source = "./modules/dns"
+  project_name = var.project_name
+}
