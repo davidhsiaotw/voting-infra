@@ -1,0 +1,18 @@
+# Local terraform directory
+.terraform/
+
+# State files
+*.tfstate
+*.tfstate.*
+
+# Variables
+*.tfvars
+*.tfvars.json
+
+# Crash logs
+crash.log
+
+# Sensitive files
+.env
+.aws/
+.kube/
