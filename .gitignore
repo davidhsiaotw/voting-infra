@@ -1,18 +1,15 @@
-# Local terraform directory
+# Terraform
 .terraform/
-
-# State files
 *.tfstate
 *.tfstate.*
-
-# Variables
 *.tfvars
 *.tfvars.json
+.terraform.lock.hcl
 
-# Crash logs
+# crash logs
 crash.log
 
-# Sensitive files
+# sensitive files
 .env
 .aws/
 .kube/
