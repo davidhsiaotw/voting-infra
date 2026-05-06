@@ -1,0 +1,14 @@
+# Default values for voting-app.
+# These will be overridden by GitHub Actions at runtime
+replicaCount: 2
+
+image:
+  registry: "REPLACE_ME" # Dynamic
+  tag: "latest"          # Dynamic
+
+database:
+  endpoint: "REPLACE_ME" # Dynamic
+
+frontend:
+  replicaCount: 2
+  sslCertArn: "REPLACE_ME" # Dynamic
