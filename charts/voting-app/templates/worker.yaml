@@ -15,3 +15,6 @@ spec:
       containers:
       - name: worker
         image: "{{ .Values.image.registry }}/voting-app-worker:{{ .Values.image.tag }}"
+        env:
+        - name: DB_PASSWORD
+          value: {{ .Values.database.password | quote }}

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-result
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: result
@@ -15,6 +15,9 @@ spec:
       containers:
       - name: result
         image: "{{ .Values.image.registry }}/voting-app-result:{{ .Values.image.tag }}"
+        env:
+        - name: DB_PASSWORD
+          value: {{ .Values.database.password | quote }}
         ports:
         - containerPort: 80
         readinessProbe:
