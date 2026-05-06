@@ -1,55 +1,58 @@
-name: End-to-End Delivery Pipeline
+name: Manual Deployment (CD)
 
 on:
-  push:
-    branches: [ main ]
-    tags: [ 'v*' ]
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'ECR Image Tag to deploy (e.g., v1.0.0, sha-xxxxxxx)'
+        required: true
+        default: 'latest'
+      environment:
+        description: 'Target Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - uat
+          - prod
 
 env:
   AWS_REGION: us-east-1
+  CLUSTER_NAME: voting-cluster
+  ECR_REGISTRY: 563571752566.dkr.ecr.us-east-1.amazonaws.com
+  RDS_ENDPOINT: voting-app-db.clvdamp9sol9.us-east-1.rds.amazonaws.com
+  CERT_ARN: arn:aws:acm:us-east-1:563571752566:certificate/ae459a1e-6875-4169-a7e3-42ce517665c2
 
 jobs:
-  build-and-push:
+  deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [frontend, vote, result, worker]
     steps:
-      - name: Checkout Infrastructure Repo (This one)
-        uses: actions/checkout@v3
-
-      - name: Checkout Source Code Repo (The app code)
-        uses: actions/checkout@v3
-        with:
-          repository: davidhsiaotw/example-voting-app
-          path: source-code
+      - name: Checkout Infra Repo
+        uses: actions/checkout@v5.0.1
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v5.1.1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Discovery - Get Account ID
-        id: account
+      - name: Update Kubeconfig
         run: |
-          echo "id=$(aws sts get-caller-identity --query Account --output text)" >> $GITHUB_OUTPUT
+          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+      - name: Install Helm
+        uses: azure/setup-helm@v5.0.0
 
-      - name: Build, tag, and push image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.account.outputs.id }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-          ECR_REPOSITORY: voting-app-${{ matrix.service }}
-          IMAGE_TAG: ${{ github.sha }}
+      - name: Deploy with Helm
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./source-code/${{ matrix.service }}
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          # Use the environment name in the release name to allow side-by-side installs
+          helm upgrade --install voting-app-${{ github.event.inputs.environment }} ./charts/voting-app \
+            --namespace ${{ github.event.inputs.environment }} \
+            --create-namespace \
+            --set image.registry=${{ env.ECR_REGISTRY }} \
+            --set image.tag=${{ github.event.inputs.tag }} \
+            --set database.endpoint=${{ env.RDS_ENDPOINT }} \
+            --set frontend.sslCertArn=${{ env.CERT_ARN }}
