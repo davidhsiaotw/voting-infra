@@ -15,17 +15,11 @@ spec:
       containers:
       - name: result
         image: "{{ .Values.image.registry }}/voting-app-result:{{ .Values.image.tag }}"
-        ports:
-        - containerPort: 80
         env:
-        - name: DB_USER
-          value: "postgres"
         - name: DB_PASSWORD
           value: {{ .Values.database.password | quote }}
-        - name: DB_HOST
-          value: "db"
-        - name: DB_NAME
-          value: "postgres"
+        ports:
+        - containerPort: 80
         readinessProbe:
           httpGet:
             path: /api/health
