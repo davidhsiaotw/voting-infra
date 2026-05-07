@@ -16,5 +16,13 @@ spec:
       - name: worker
         image: "{{ .Values.image.registry }}/voting-app-worker:{{ .Values.image.tag }}"
         env:
+        - name: REDIS_HOST
+          value: "redis"
+        - name: DB_USER
+          value: "postgres"
         - name: DB_PASSWORD
           value: {{ .Values.database.password | quote }}
+        - name: DB_HOST
+          value: "db"
+        - name: DB_NAME
+          value: "postgres"
