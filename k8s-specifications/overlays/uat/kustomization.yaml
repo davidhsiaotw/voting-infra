@@ -1,0 +1,17 @@
+resources:
+- ../../base/vote
+- ../../base/result
+- ../../base/worker
+- ../../base/frontend
+- ../../base/redis
+- ../../base/db
+
+namePrefix: uat-
+commonLabels:
+  environment: uat
+
+secretGenerator:
+- name: db-secret
+  type: Opaque
+  literals:
+  - password=postgres # Default for uat

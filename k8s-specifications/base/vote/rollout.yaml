@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: vote
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vote
+  template:
+    metadata:
+      labels:
+        app: vote
+    spec:
+      containers:
+      - name: vote
+        image: vote
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /api/options
+            port: 80
+  strategy:
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {} # Manual intervention or add duration
+      - setWeight: 50
+      - pause: {duration: 1h}
