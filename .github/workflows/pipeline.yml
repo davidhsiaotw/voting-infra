@@ -16,18 +16,31 @@ on:
           - dev
           - uat
           - prod
-
-env:
-  AWS_REGION: us-east-1
-  CLUSTER_NAME: voting-cluster
-  ECR_REGISTRY: 563571752566.dkr.ecr.us-east-1.amazonaws.com
-  RDS_ENDPOINT: voting-app-db.clvdamp9sol9.us-east-1.rds.amazonaws.com
-  CERT_ARN: arn:aws:acm:us-east-1:563571752566:certificate/ae459a1e-6875-4169-a7e3-42ce517665c2
+  repository_dispatch:
+    types: [deploy-event]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      CLUSTER_NAME: ${{ vars.CLUSTER_NAME }}
+      ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
+      RDS_ENDPOINT: ${{ vars.RDS_ENDPOINT }}
+      CERT_ARN: ${{ vars.CERT_ARN }}
     steps:
+      - name: Determine Deployment Variables
+        id: vars
+        run: |
+          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
+            echo "DEPLOY_TAG=${{ github.event.client_payload.tag }}" >> $GITHUB_OUTPUT
+            echo "DEPLOY_ENV=${{ github.event.client_payload.environment }}" >> $GITHUB_OUTPUT
+          else
+            echo "DEPLOY_TAG=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+            echo "DEPLOY_ENV=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Checkout Infra Repo
         uses: actions/checkout@v5.0.1
 
@@ -52,11 +65,11 @@ jobs:
           DB_PASS=$(aws ssm get-parameter --name "/voting/db_password" --with-decryption --query "Parameter.Value" --output text)
 
           # Use the environment name in the release name to allow side-by-side installs
-          helm upgrade --install voting-app-${{ github.event.inputs.environment }} ./charts/voting-app \
-            --namespace ${{ github.event.inputs.environment }} \
+          helm upgrade --install voting-app-${{ steps.vars.outputs.DEPLOY_ENV }} ./charts/voting-app \
+            --namespace ${{ steps.vars.outputs.DEPLOY_ENV }} \
             --create-namespace \
             --set image.registry=${{ env.ECR_REGISTRY }} \
-            --set image.tag=${{ github.event.inputs.tag }} \
+            --set image.tag=${{ steps.vars.outputs.DEPLOY_TAG }} \
             --set database.endpoint=${{ env.RDS_ENDPOINT }} \
             --set database.password=$DB_PASS \
             --set frontend.sslCertArn=${{ env.CERT_ARN }}
