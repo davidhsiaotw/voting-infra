@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/wyxiao/voting-infra.git
+    repoURL: https://github.com/davidhsiaotw/voting-infra.git
     targetRevision: HEAD
     path: k8s-specifications/overlays/dev
   destination:
@@ -27,7 +27,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/wyxiao/voting-infra.git
+    repoURL: https://github.com/davidhsiaotw/voting-infra.git
     targetRevision: HEAD
     path: k8s-specifications/overlays/uat
   destination:
@@ -48,7 +48,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/wyxiao/voting-infra.git
+    repoURL: https://github.com/davidhsiaotw/voting-infra.git
     targetRevision: HEAD
     path: k8s-specifications/overlays/prod
   destination:
