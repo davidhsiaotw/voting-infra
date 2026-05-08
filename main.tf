@@ -36,3 +36,8 @@ module "dns" {
   source = "./modules/dns"
   project_name = var.project_name
 }
+
+module "k8s_addons" {
+  source     = "./modules/k8s-addons"
+  depends_on = [module.eks]
+}

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: result
+spec:
+  template:
+    spec:
+      volumes:
+      - name: secrets-store-inline
+        csi:
+          volumeAttributes:
+            secretProviderClass: "uat-aws-secrets"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+spec:
+  template:
+    spec:
+      volumes:
+      - name: secrets-store-inline
+        csi:
+          volumeAttributes:
+            secretProviderClass: "uat-aws-secrets"

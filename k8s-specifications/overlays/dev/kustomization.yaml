@@ -10,8 +10,5 @@ namePrefix: dev-
 commonLabels:
   environment: dev
 
-secretGenerator:
-- name: db-secret
-  type: Opaque
-  literals:
-  - password=postgres # Default for dev, will be updated via CI
+patches:
+- path: patch-csi.yaml

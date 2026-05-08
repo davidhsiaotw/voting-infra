@@ -10,8 +10,6 @@ namePrefix: prod-
 commonLabels:
   environment: prod
 
-secretGenerator:
-- name: db-secret
-  type: Opaque
-  literals:
-  - password=postgres # Default for prod
+patches:
+- path: patch-csi.yaml
+

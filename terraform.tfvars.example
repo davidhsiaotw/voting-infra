@@ -1,0 +1,4 @@
+# Example configuration - Rename this to terraform.tfvars and fill in values
+region       = "us-east-1"
+project_name = "voting-app"
+cluster_name = "voting-cluster"

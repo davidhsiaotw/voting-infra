@@ -61,9 +61,6 @@ jobs:
 
       - name: Deploy with Helm
         run: |
-          # Fetch the DB Password from SSM
-          DB_PASS=$(aws ssm get-parameter --name "/voting/db_password" --with-decryption --query "Parameter.Value" --output text)
-
           # Use the environment name in the release name to allow side-by-side installs
           helm upgrade --install voting-app-${{ steps.vars.outputs.DEPLOY_ENV }} ./charts/voting-app \
             --namespace ${{ steps.vars.outputs.DEPLOY_ENV }} \
@@ -71,5 +68,4 @@ jobs:
             --set image.registry=${{ env.ECR_REGISTRY }} \
             --set image.tag=${{ steps.vars.outputs.DEPLOY_TAG }} \
             --set database.endpoint=${{ env.RDS_ENDPOINT }} \
-            --set database.password=$DB_PASS \
             --set frontend.sslCertArn=${{ env.CERT_ARN }}

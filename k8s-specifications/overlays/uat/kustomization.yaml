@@ -10,8 +10,6 @@ namePrefix: uat-
 commonLabels:
   environment: uat
 
-secretGenerator:
-- name: db-secret
-  type: Opaque
-  literals:
-  - password=postgres # Default for uat
+patches:
+- path: patch-csi.yaml
+
