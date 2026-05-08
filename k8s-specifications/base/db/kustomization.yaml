@@ -1,3 +1,2 @@
 resources:
 - db-service.yaml
-- secret-provider-class.yaml

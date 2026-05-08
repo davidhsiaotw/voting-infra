@@ -10,7 +10,9 @@ resources:
 commonLabels:
   environment: uat
 
-patches:
-- path: patch-result.yaml
-- path: patch-worker.yaml
+secretGenerator:
+- name: db-secret
+  type: Opaque
+  literals:
+  - password=postgres # Default for uat
 
