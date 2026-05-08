@@ -9,4 +9,4 @@ spec:
       - name: secrets-store-inline
         csi:
           volumeAttributes:
-            secretProviderClass: "prod-aws-secrets"
+            secretProviderClass: "aws-secrets"
