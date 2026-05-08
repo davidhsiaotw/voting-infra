@@ -11,5 +11,6 @@ commonLabels:
   environment: prod
 
 patches:
-- path: patch-csi.yaml
+- path: patch-result.yaml
+- path: patch-worker.yaml
 

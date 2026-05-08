@@ -11,7 +11,8 @@ commonLabels:
   environment: dev
 
 patches:
-- path: patch-csi.yaml
+- path: patch-result.yaml
+- path: patch-worker.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
