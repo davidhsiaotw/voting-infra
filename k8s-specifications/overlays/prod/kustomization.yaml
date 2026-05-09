@@ -13,7 +13,8 @@ secretGenerator:
 - name: db-secret
   type: Opaque
   literals:
-  - password=postgres # Default for prod
+  - password=PLACEHOLDER_PASSWORD
+apiVersion: kustomize.config.k8s.io/v1beta1
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
