@@ -31,5 +31,12 @@ images:
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker
   newTag: latest
 
-configurations:
-- ../../kustomizeconfig.yaml
+
+patches:
+- target:
+    kind: Rollout
+    name: vote
+  patch: |-
+    - op: add
+      path: /spec/template/metadata/labels/environment
+      value: qa

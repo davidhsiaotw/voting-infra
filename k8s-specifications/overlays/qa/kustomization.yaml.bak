@@ -6,37 +6,29 @@ resources:
 - ../../base/redis
 - ../../base/db
 
-
 commonLabels:
-  environment: dev
+  environment: qa
 
 secretGenerator:
-- literals:
-  - password=postgres
-  name: db-secret
+- name: db-secret
   type: Opaque
+  literals:
+  - password=postgres # Default for qa, will be updated via CI
+
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
 - name: frontend
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-frontend
-  newTag: sha-b434552
+  newTag: latest
 - name: result
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-result
-  newTag: sha-b434552
+  newTag: latest
 - name: vote
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-vote
-  newTag: sha-b434552
+  newTag: latest
 - name: worker
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker
-  newTag: sha-b434552
+  newTag: latest
 
-
-patches:
-- target:
-    kind: Rollout
-    name: vote
-  patch: |-
-    - op: add
-      path: /spec/template/metadata/labels/environment
-      value: dev
+- ../../kustomizeconfig.yaml

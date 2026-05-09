@@ -6,37 +6,28 @@ resources:
 - ../../base/redis
 - ../../base/db
 
-
 commonLabels:
-  environment: dev
+  environment: uat
 
 secretGenerator:
-- literals:
-  - password=postgres
-  name: db-secret
+- name: db-secret
   type: Opaque
+  literals:
+  - password=postgres # Default for uat
+
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
 - name: frontend
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-frontend
-  newTag: sha-b434552
+  newTag: latest
 - name: result
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-result
-  newTag: sha-b434552
+  newTag: latest
 - name: vote
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-vote
-  newTag: sha-b434552
+  newTag: latest
 - name: worker
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker
-  newTag: sha-b434552
-
-
-patches:
-- target:
-    kind: Rollout
-    name: vote
-  patch: |-
-    - op: add
-      path: /spec/template/metadata/labels/environment
-      value: dev
+  newTag: latest
+- ../../kustomizeconfig.yaml
