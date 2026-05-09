@@ -21,16 +21,16 @@ kind: Kustomization
 images:
 - name: frontend
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-frontend
-  newTag: sha-866d4bf
+  newTag: sha-16f590c
 - name: result
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-result
-  newTag: sha-866d4bf
+  newTag: sha-16f590c
 - name: vote
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-vote
-  newTag: sha-866d4bf
+  newTag: sha-16f590c
 - name: worker
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker
-  newTag: sha-866d4bf
+  newTag: sha-16f590c
 
 patches:
 - patch: |-
