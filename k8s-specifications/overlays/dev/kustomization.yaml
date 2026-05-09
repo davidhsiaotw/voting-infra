@@ -11,22 +11,22 @@ commonLabels:
   environment: dev
 
 secretGenerator:
-- name: db-secret
+- literals:
+  - password=postgres
+  name: db-secret
   type: Opaque
-  literals:
-  - password=postgres # Default for dev, will be updated via CI
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
 - name: frontend
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-frontend
-  newTag: sha-75109c3
+  newTag: sha-b434552
 - name: result
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-result
-  newTag: sha-75109c3
+  newTag: sha-b434552
 - name: vote
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-vote
-  newTag: sha-75109c3
+  newTag: sha-b434552
 - name: worker
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker
-  newTag: sha-75109c3
+  newTag: sha-b434552
