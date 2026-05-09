@@ -1,6 +1,7 @@
 resources:
 - db-service.yaml
 - migration-job.yaml
+- db-secret.yaml
 
 configMapGenerator:
 - name: db-migrations

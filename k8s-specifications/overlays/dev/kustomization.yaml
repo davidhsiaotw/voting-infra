@@ -10,11 +10,6 @@ resources:
 commonLabels:
   environment: dev
 
-secretGenerator:
-- literals:
-  - password=v4gX9^D4cv
-  name: db-secret
-  type: Opaque
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
