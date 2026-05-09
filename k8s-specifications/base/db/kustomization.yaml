@@ -5,4 +5,4 @@ resources:
 configMapGenerator:
 - name: db-migrations
   files:
-  - ../../../db-migrations/V1__Create_votes_table.sql
+  - db-migrations/V1__Create_votes_table.sql
