@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migration
+spec:
+  template:
+    spec:
+      containers:
+      - name: flyway
+        image: flyway/flyway:9.22.3
+        args:
+        - -url=jdbc:postgresql://db:5432/postgres
+        - -user=postgres
+        - -password=$(DB_PASSWORD)
+        - -connectRetries=60
+        - migrate
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: password
+        volumeMounts:
+        - name: migrations
+          mountPath: /flyway/sql
+      restartPolicy: OnFailure
+      volumes:
+      - name: migrations
+        configMap:
+          name: db-migrations
+  backoffLimit: 4

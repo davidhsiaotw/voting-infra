@@ -1,2 +1,8 @@
 resources:
 - db-service.yaml
+- migration-job.yaml
+
+configMapGenerator:
+- name: db-migrations
+  files:
+  - ../../../db-migrations/V1__Create_votes_table.sql
