@@ -30,3 +30,6 @@ images:
 - name: worker
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker
   newTag: sha-b434552
+
+configurations:
+- ../../kustomizeconfig.yaml
