@@ -10,10 +10,10 @@ commonLabels:
   environment: prod
 
 secretGenerator:
-- name: db-secret
+- literals:
+  - password=v4gX9^D4cv
+  name: db-secret
   type: Opaque
-  literals:
-  - password=PLACEHOLDER_PASSWORD
 apiVersion: kustomize.config.k8s.io/v1beta1
 
 apiVersion: kustomize.config.k8s.io/v1beta1
@@ -21,22 +21,22 @@ kind: Kustomization
 images:
 - name: frontend
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-frontend
-  newTag: latest
+  newTag: sha-866d4bf
 - name: result
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-result
-  newTag: latest
+  newTag: sha-866d4bf
 - name: vote
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-vote
-  newTag: latest
+  newTag: sha-866d4bf
 - name: worker
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker
-  newTag: latest
+  newTag: sha-866d4bf
 
 patches:
-- target:
-    kind: Rollout
-    name: vote
-  patch: |-
+- patch: |-
     - op: add
       path: /spec/template/metadata/labels/environment
       value: prod
+  target:
+    kind: Rollout
+    name: vote
