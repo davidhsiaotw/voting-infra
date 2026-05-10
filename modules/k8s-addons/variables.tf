@@ -28,8 +28,8 @@ variable "grafana_root_url" {
   default     = ""
 }
 
-variable "alertmanager_slack_url" {
-  description = "Slack Webhook URL for Alertmanager"
+variable "alertmanager_email" {
+  description = "Recipient email address for Alertmanager"
   type        = string
   default     = ""
 }

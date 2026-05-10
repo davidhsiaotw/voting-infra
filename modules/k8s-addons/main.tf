@@ -119,21 +119,25 @@ resource "helm_release" "prometheus_stack" {
       alertmanager = {
         config = {
           global = {
-            slack_api_url = var.alertmanager_slack_url
+            # SMTP settings (User should provide real SMTP server details)
+            smtp_smarthost = "smtp.gmail.com:587"
+            smtp_from      = "alerts@wyxiao.games"
+            smtp_auth_username = "alerts@wyxiao.games"
+            smtp_auth_password = "REPLACE_WITH_APP_PASSWORD"
           }
           route = {
             group_by = ["alertname"]
             group_wait = "30s"
             group_interval = "5m"
             repeat_interval = "12h"
-            receiver = "slack-notifications"
+            receiver = "email-notifications"
           }
           receivers = [
             {
-              name = "slack-notifications"
-              slack_configs = [
+              name = "email-notifications"
+              email_configs = [
                 {
-                  channel = "#alerts"
+                  to = var.alertmanager_email
                   send_resolved = true
                 }
               ]

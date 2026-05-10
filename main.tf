@@ -45,7 +45,7 @@ module "k8s_addons" {
   grafana_github_client_id     = var.grafana_github_client_id
   grafana_github_client_secret = var.grafana_github_client_secret
   grafana_root_url             = var.grafana_root_url
-  alertmanager_slack_url       = var.alertmanager_slack_url
+  alertmanager_email           = var.alertmanager_email
 
   depends_on = [module.eks, module.rds]
 }
