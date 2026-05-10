@@ -4,6 +4,7 @@ data "aws_iam_role" "lab_role" {
 
 resource "aws_eks_cluster" "main" {
   name     = var.cluster_name
+  version  = var.kubernetes_version
   role_arn = data.aws_iam_role.lab_role.arn
 
   vpc_config {
@@ -16,6 +17,7 @@ resource "aws_eks_node_group" "main" {
   node_group_name = "managed-nodes"
   node_role_arn   = data.aws_iam_role.lab_role.arn
   subnet_ids      = var.subnet_ids
+  version         = var.kubernetes_version
 
   scaling_config {
     desired_size = 4

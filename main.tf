@@ -12,10 +12,11 @@ module "vpc" {
 module "eks" {
   source = "./modules/eks"
 
-  project_name = var.project_name
-  cluster_name = var.cluster_name
-  subnet_ids   = module.vpc.private_subnet_ids
-  vpc_id       = module.vpc.vpc_id
+  project_name       = var.project_name
+  cluster_name       = var.cluster_name
+  subnet_ids         = module.vpc.private_subnet_ids
+  vpc_id             = module.vpc.vpc_id
+  kubernetes_version = var.kubernetes_version
 }
 
 module "rds" {
@@ -46,6 +47,7 @@ module "k8s_addons" {
   grafana_github_client_secret = var.grafana_github_client_secret
   grafana_root_url             = var.grafana_root_url
   alertmanager_email           = var.alertmanager_email
+  ssl_certificate_arn          = module.dns.certificate_arn
 
   depends_on = [module.eks, module.rds]
 }

@@ -64,3 +64,9 @@ variable "alertmanager_email" {
   type        = string
   default     = ""
 }
+
+variable "kubernetes_version" {
+  description = "Kubernetes version for EKS (use this to demonstrate Day 2 patching)"
+  type        = string
+  default     = "1.30"
+}

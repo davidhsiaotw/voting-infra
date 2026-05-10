@@ -18,6 +18,12 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+  ignoreDifferences:
+    - group: ""
+      kind: Service
+      name: frontend
+      jsonPointers:
+        - /metadata/annotations/service.beta.kubernetes.io~1aws-load-balancer-ssl-cert
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -39,6 +45,12 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+  ignoreDifferences:
+    - group: ""
+      kind: Service
+      name: frontend
+      jsonPointers:
+        - /metadata/annotations/service.beta.kubernetes.io~1aws-load-balancer-ssl-cert
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -60,6 +72,12 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+  ignoreDifferences:
+    - group: ""
+      kind: Service
+      name: frontend
+      jsonPointers:
+        - /metadata/annotations/service.beta.kubernetes.io~1aws-load-balancer-ssl-cert
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -81,3 +99,9 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+  ignoreDifferences:
+    - group: ""
+      kind: Service
+      name: frontend
+      jsonPointers:
+        - /metadata/annotations/service.beta.kubernetes.io~1aws-load-balancer-ssl-cert
