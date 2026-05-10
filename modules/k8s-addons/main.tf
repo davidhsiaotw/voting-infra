@@ -201,3 +201,12 @@ resource "helm_release" "loki" {
     value = "10Gi"
   }
 }
+
+data "kubernetes_service" "grafana" {
+  metadata {
+    name      = "${helm_release.prometheus_stack.name}-grafana"
+    namespace = kubernetes_namespace.monitoring.metadata[0].name
+  }
+  depends_on = [helm_release.prometheus_stack]
+}
+

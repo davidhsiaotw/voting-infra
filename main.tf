@@ -34,7 +34,7 @@ module "ecr" {
 }
 
 module "dns" {
-  source = "./modules/dns"
+  source       = "./modules/dns"
   project_name = var.project_name
 }
 
@@ -50,4 +50,21 @@ module "k8s_addons" {
   ssl_certificate_arn          = module.dns.certificate_arn
 
   depends_on = [module.eks, module.rds]
+}
+
+# Dynamic Route53 records after LB is created
+resource "aws_route53_record" "frontend" {
+  zone_id = module.dns.zone_id
+  name    = "vote.wyxiao.games"
+  type    = "CNAME"
+  ttl     = 300
+  records = [module.k8s_addons.frontend_lb_hostname]
+}
+
+resource "aws_route53_record" "grafana" {
+  zone_id = module.dns.zone_id
+  name    = "grafana.wyxiao.games"
+  type    = "CNAME"
+  ttl     = 300
+  records = [module.k8s_addons.grafana_lb_hostname]
 }
