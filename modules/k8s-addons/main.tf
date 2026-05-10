@@ -14,6 +14,9 @@ resource "kubernetes_secret" "db_secret" {
   metadata {
     name      = "db-secret"
     namespace = each.value.metadata[0].name
+    annotations = {
+      "argocd.argoproj.io/compare-options" = "IgnoreExtraneous"
+    }
   }
 
   data = {
@@ -28,6 +31,9 @@ resource "kubernetes_service" "db_service" {
   metadata {
     name      = "db"
     namespace = each.value.metadata[0].name
+    annotations = {
+      "argocd.argoproj.io/compare-options" = "IgnoreExtraneous"
+    }
   }
 
   spec {
