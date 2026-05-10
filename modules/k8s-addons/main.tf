@@ -255,6 +255,17 @@ resource "kubernetes_manifest" "prometheus_rules" {
               annotations = {
                 summary = "High Memory usage on {{ $labels.instance }}"
               }
+            },
+            {
+              alert = "HighDiskUsage"
+              expr  = "(node_filesystem_size_bytes{mountpoint=\"/\"} - node_filesystem_free_bytes{mountpoint=\"/\"}) / node_filesystem_size_bytes{mountpoint=\"/\"} * 100 > 80"
+              for   = "5m"
+              labels = {
+                severity = "critical"
+              }
+              annotations = {
+                summary = "High Disk usage on {{ $labels.instance }}"
+              }
             }
           ]
         }

@@ -7,3 +7,8 @@ commonLabels:
   create: true
   kind: Rollout
   group: argoproj.io
+
+images:
+- kind: Rollout
+  group: argoproj.io
+  path: spec/template/spec/containers/image
