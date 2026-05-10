@@ -11,6 +11,10 @@ commonLabels:
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
+configurations:
+- ../../kustomizeconfig.yaml
+
 images:
 - name: frontend
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-frontend
