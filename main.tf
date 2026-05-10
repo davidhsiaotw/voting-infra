@@ -38,6 +38,14 @@ module "dns" {
 }
 
 module "k8s_addons" {
-  source     = "./modules/k8s-addons"
-  depends_on = [module.eks]
+  source      = "./modules/k8s-addons"
+  rds_address = module.rds.rds_address
+  db_password = module.rds.db_password
+
+  grafana_github_client_id     = var.grafana_github_client_id
+  grafana_github_client_secret = var.grafana_github_client_secret
+  grafana_root_url             = var.grafana_root_url
+  alertmanager_slack_url       = var.alertmanager_slack_url
+
+  depends_on = [module.eks, module.rds]
 }

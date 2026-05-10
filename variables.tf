@@ -39,3 +39,28 @@ variable "availability_zones" {
   type        = list(string)
   default     = ["us-east-1a", "us-east-1b"]
 }
+
+variable "grafana_github_client_id" {
+  description = "GitHub OAuth Client ID for Grafana"
+  type        = string
+  default     = ""
+}
+
+variable "grafana_github_client_secret" {
+  description = "GitHub OAuth Client Secret for Grafana"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "grafana_root_url" {
+  description = "Root URL for Grafana"
+  type        = string
+  default     = ""
+}
+
+variable "alertmanager_slack_url" {
+  description = "Slack Webhook URL for Alertmanager"
+  type        = string
+  default     = ""
+}
