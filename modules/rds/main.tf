@@ -1,13 +1,3 @@
-resource "aws_ssm_parameter" "db_password" {
-  name  = "/voting/db_password"
-  type  = "SecureString"
-  value = "v4gX9^D4cv"
-
-  lifecycle {
-    ignore_changes = [value]
-  }
-}
-
 resource "aws_db_subnet_group" "main" {
   name       = "${var.project_name}-db-subnet-group"
   subnet_ids = var.private_subnet_ids

@@ -9,23 +9,6 @@ resource "kubernetes_namespace" "envs" {
   }
 }
 
-resource "kubernetes_secret" "db_secret" {
-  for_each = kubernetes_namespace.envs
-  metadata {
-    name      = "db-secret"
-    namespace = each.value.metadata[0].name
-    annotations = {
-      "argocd.argoproj.io/compare-options" = "IgnoreExtraneous"
-    }
-  }
-
-  data = {
-    password = var.db_password
-  }
-
-  type = "Opaque"
-}
-
 resource "kubernetes_service" "db_service" {
   for_each = kubernetes_namespace.envs
   metadata {
