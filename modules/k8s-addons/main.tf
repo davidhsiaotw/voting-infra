@@ -81,7 +81,7 @@ resource "helm_release" "argo_rollouts" {
   chart      = "argo-rollouts"
   namespace  = "kube-system"
 }
-
+/*
 resource "kubernetes_namespace" "monitoring" {
   metadata {
     name = "monitoring"
@@ -242,3 +242,4 @@ data "kubernetes_service" "grafana" {
   }
   depends_on = [helm_release.prometheus_stack]
 }
+*/
