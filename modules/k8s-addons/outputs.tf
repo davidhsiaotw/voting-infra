@@ -1,5 +1,5 @@
-output "frontend_lb_hostname" {
-  value = kubernetes_service.frontend_ssl["prod"].status[0].load_balancer[0].ingress[0].hostname
+output "frontend_lb_hostnames" {
+  value = { for k, v in kubernetes_service.frontend_ssl : k => v.status[0].load_balancer[0].ingress[0].hostname }
 }
 
 output "grafana_lb_hostname" {

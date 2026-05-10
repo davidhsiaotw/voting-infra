@@ -52,13 +52,22 @@ module "k8s_addons" {
   depends_on = [module.eks, module.rds]
 }
 
-# Dynamic Route53 records after LB is created
-resource "aws_route53_record" "frontend" {
+# Dynamic Route53 records for all environments
+resource "aws_route53_record" "frontend_envs" {
+  for_each = toset(["dev", "qa", "uat"])
+  zone_id  = module.dns.zone_id
+  name     = "${each.key}.vote.wyxiao.games"
+  type     = "CNAME"
+  ttl      = 300
+  records  = [module.k8s_addons.frontend_lb_hostnames[each.key]]
+}
+
+resource "aws_route53_record" "frontend_prod" {
   zone_id = module.dns.zone_id
   name    = "vote.wyxiao.games"
   type    = "CNAME"
   ttl     = 300
-  records = [module.k8s_addons.frontend_lb_hostname]
+  records = [module.k8s_addons.frontend_lb_hostnames["prod"]]
 }
 
 resource "aws_route53_record" "grafana" {
