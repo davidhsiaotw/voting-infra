@@ -169,6 +169,40 @@ resource "helm_release" "prometheus_stack" {
           }
         }
       }
+      prometheusOperator = {
+        additionalPrometheusRulesMap = {
+          resource-alerts = {
+            groups = [
+              {
+                name = "node-resources"
+                rules = [
+                  {
+                    alert = "HighCpuUsage"
+                    expr  = "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100) > 80"
+                    for   = "5m"
+                    labels = { severity = "critical" }
+                    annotations = { summary = "High CPU usage on {{ $labels.instance }}" }
+                  },
+                  {
+                    alert = "HighMemoryUsage"
+                    expr  = "(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 80"
+                    for   = "5m"
+                    labels = { severity = "critical" }
+                    annotations = { summary = "High Memory usage on {{ $labels.instance }}" }
+                  },
+                  {
+                    alert = "HighDiskUsage"
+                    expr  = "(node_filesystem_size_bytes{mountpoint=\"/\"} - node_filesystem_free_bytes{mountpoint=\"/\"}) / node_filesystem_size_bytes{mountpoint=\"/\"} * 100 > 80"
+                    for   = "5m"
+                    labels = { severity = "critical" }
+                    annotations = { summary = "High Disk usage on {{ $labels.instance }}" }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
       alertmanager = {
         config = {
           global = {
@@ -216,63 +250,6 @@ resource "helm_release" "loki" {
     name  = "loki.persistence.size"
     value = "10Gi"
   }
-}
-
-resource "kubernetes_manifest" "prometheus_rules" {
-  manifest = {
-    apiVersion = "monitoring.coreos.com/v1"
-    kind       = "PrometheusRule"
-    metadata = {
-      name      = "resource-alerts"
-      namespace = kubernetes_namespace.monitoring.metadata[0].name
-      labels = {
-        release = "prometheus"
-      }
-    }
-    spec = {
-      groups = [
-        {
-          name = "node-resources"
-          rules = [
-            {
-              alert = "HighCpuUsage"
-              expr  = "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100) > 80"
-              for   = "5m"
-              labels = {
-                severity = "critical"
-              }
-              annotations = {
-                summary = "High CPU usage on {{ $labels.instance }}"
-              }
-            },
-            {
-              alert = "HighMemoryUsage"
-              expr  = "(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 80"
-              for   = "5m"
-              labels = {
-                severity = "critical"
-              }
-              annotations = {
-                summary = "High Memory usage on {{ $labels.instance }}"
-              }
-            },
-            {
-              alert = "HighDiskUsage"
-              expr  = "(node_filesystem_size_bytes{mountpoint=\"/\"} - node_filesystem_free_bytes{mountpoint=\"/\"}) / node_filesystem_size_bytes{mountpoint=\"/\"} * 100 > 80"
-              for   = "5m"
-              labels = {
-                severity = "critical"
-              }
-              annotations = {
-                summary = "High Disk usage on {{ $labels.instance }}"
-              }
-            }
-          ]
-        }
-      ]
-    }
-  }
-  depends_on = [helm_release.prometheus_stack]
 }
 
 data "kubernetes_service" "grafana" {
