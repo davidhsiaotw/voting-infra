@@ -19,16 +19,16 @@ configurations:
 images:
 - name: frontend
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-frontend
-  newTag: sha-0843d7e
+  newTag: sha-8ee4724
 - name: result
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-result
-  newTag: sha-0843d7e
+  newTag: sha-8ee4724
 - name: vote
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-vote
-  newTag: sha-0843d7e
+  newTag: sha-8ee4724
 - name: worker
   newName: 563571752566.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker
-  newTag: sha-0843d7e
+  newTag: sha-8ee4724
 
 
 patches:
