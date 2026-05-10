@@ -136,6 +136,22 @@ resource "helm_release" "prometheus_stack" {
         service = {
           type = "LoadBalancer"
         }
+        additionalDataSources = [
+          {
+            name      = "Loki"
+            type      = "loki"
+            url       = "http://loki:3100"
+            access    = "proxy"
+            isDefault = false
+          }
+        ]
+        sidecar = {
+          dashboards = {
+            enabled          = true
+            label            = "grafana_dashboard"
+            searchNamespace  = "ALL"
+          }
+        }
       }
       prometheus = {
         prometheusSpec = {
@@ -202,6 +218,52 @@ resource "helm_release" "loki" {
   }
 }
 
+resource "kubernetes_manifest" "prometheus_rules" {
+  manifest = {
+    apiVersion = "monitoring.coreos.com/v1"
+    kind       = "PrometheusRule"
+    metadata = {
+      name      = "resource-alerts"
+      namespace = kubernetes_namespace.monitoring.metadata[0].name
+      labels = {
+        release = "prometheus"
+      }
+    }
+    spec = {
+      groups = [
+        {
+          name = "node-resources"
+          rules = [
+            {
+              alert = "HighCpuUsage"
+              expr  = "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100) > 80"
+              for   = "5m"
+              labels = {
+                severity = "critical"
+              }
+              annotations = {
+                summary = "High CPU usage on {{ $labels.instance }}"
+              }
+            },
+            {
+              alert = "HighMemoryUsage"
+              expr  = "(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 80"
+              for   = "5m"
+              labels = {
+                severity = "critical"
+              }
+              annotations = {
+                summary = "High Memory usage on {{ $labels.instance }}"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+  depends_on = [helm_release.prometheus_stack]
+}
+
 data "kubernetes_service" "grafana" {
   metadata {
     name      = "${helm_release.prometheus_stack.name}-grafana"
@@ -209,4 +271,3 @@ data "kubernetes_service" "grafana" {
   }
   depends_on = [helm_release.prometheus_stack]
 }
-
