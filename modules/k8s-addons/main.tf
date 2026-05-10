@@ -24,17 +24,17 @@ resource "kubernetes_service" "db_service" {
     external_name = var.rds_address
   }
 }
-
-resource "kubernetes_service" "frontend_ssl" {
+# resource "kubernetes_service" "frontend_ssl" {
+resource "kubernetes_service" "frontend_http" {
   for_each = kubernetes_namespace.envs
   metadata {
     name      = "frontend"
     namespace = each.value.metadata[0].name
     annotations = {
       "argocd.argoproj.io/compare-options"                   = "IgnoreExtraneous"
-      "service.beta.kubernetes.io/aws-load-balancer-ssl-cert" = var.ssl_certificate_arn
-      "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" = "443"
-      "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" = "http"
+      # "service.beta.kubernetes.io/aws-load-balancer-ssl-cert" = var.# ssl_certificate_arn
+      # "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" = "443"
+      # "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" = "http"
     }
   }
 
@@ -45,11 +45,11 @@ resource "kubernetes_service" "frontend_ssl" {
       port        = 80
       target_port = 80
     }
-    port {
-      name        = "https"
-      port        = 443
-      target_port = 80
-    }
+#    port {
+#      name        = "https"
+#      port        = 443
+#      target_port = 80
+#    }
     selector = {
       app = "frontend"
     }

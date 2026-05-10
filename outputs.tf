@@ -18,6 +18,6 @@ output "ecr_repository_urls" {
   value = module.ecr.repository_urls
 }
 
-output "ssl_certificate_arn" {
-  value = module.dns.certificate_arn
-}
+# output "ssl_certificate_arn" {
+#   value = module.dns.certificate_arn
+# }

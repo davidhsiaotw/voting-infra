@@ -33,10 +33,10 @@ module "ecr" {
   project_name = var.project_name
 }
 
-module "dns" {
-  source       = "./modules/dns"
-  project_name = var.project_name
-}
+# module "dns" {
+#   source       = "./modules/dns"
+#   project_name = var.project_name
+# }
 
 module "k8s_addons" {
   source      = "./modules/k8s-addons"
@@ -47,33 +47,33 @@ module "k8s_addons" {
   grafana_github_client_secret = var.grafana_github_client_secret
   grafana_root_url             = var.grafana_root_url
   alertmanager_email           = var.alertmanager_email
-  ssl_certificate_arn          = module.dns.certificate_arn
+  # ssl_certificate_arn          = module.dns.certificate_arn
 
   depends_on = [module.eks, module.rds]
 }
 
 # Dynamic Route53 records for all environments
-resource "aws_route53_record" "frontend_envs" {
-  for_each = toset(["dev", "qa", "uat"])
-  zone_id  = module.dns.zone_id
-  name     = "${each.key}.vote.wyxiao.games"
-  type     = "CNAME"
-  ttl      = 300
-  records  = [module.k8s_addons.frontend_lb_hostnames[each.key]]
-}
+# resource "aws_route53_record" "frontend_envs" {
+#   for_each = toset(["dev", "qa", "uat"])
+#   zone_id  = module.dns.zone_id
+#   name     = "${each.key}.vote.wyxiao.games"
+#   type     = "CNAME"
+#   ttl      = 300
+#   records  = [module.k8s_addons.frontend_lb_hostnames[each.key]]
+# }
 
-resource "aws_route53_record" "frontend_prod" {
-  zone_id = module.dns.zone_id
-  name    = "vote.wyxiao.games"
-  type    = "CNAME"
-  ttl     = 300
-  records = [module.k8s_addons.frontend_lb_hostnames["prod"]]
-}
+# resource "aws_route53_record" "frontend_prod" {
+#   zone_id = module.dns.zone_id
+#   name    = "vote.wyxiao.games"
+#   type    = "CNAME"
+#   ttl     = 300
+#   records = [module.k8s_addons.frontend_lb_hostnames["prod"]]
+# }
 
-resource "aws_route53_record" "grafana" {
-  zone_id = module.dns.zone_id
-  name    = "grafana.wyxiao.games"
-  type    = "CNAME"
-  ttl     = 300
-  records = [module.k8s_addons.grafana_lb_hostname]
-}
+# resource "aws_route53_record" "grafana" {
+#   zone_id = module.dns.zone_id
+#   name    = "grafana.wyxiao.games"
+#   type    = "CNAME"
+#   ttl     = 300
+#   records = [module.k8s_addons.grafana_lb_hostname]
+# }
