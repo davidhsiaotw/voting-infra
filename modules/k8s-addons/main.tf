@@ -3,7 +3,7 @@ locals {
 }
 
 resource "kubernetes_namespace" "envs" {
-  for_each = toset(locals.environments)
+  for_each = toset(local.environments)
   metadata {
     name = each.key
   }
