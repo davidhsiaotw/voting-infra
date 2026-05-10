@@ -7,6 +7,6 @@ output "rds_address" {
 }
 
 output "db_password" {
-  value     = data.aws_ssm_parameter.db_password.value
+  value     = random_password.db_password.result
   sensitive = true
 }

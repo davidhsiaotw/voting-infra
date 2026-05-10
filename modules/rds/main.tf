@@ -1,5 +1,17 @@
-data "aws_ssm_parameter" "db_password" {
-  name = "/voting/db_password"
+resource "random_password" "db_password" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "aws_ssm_parameter" "db_password" {
+  name  = "/voting/db_password"
+  type  = "SecureString"
+  value = random_password.db_password.result
+
+  lifecycle {
+    ignore_changes = [value]
+  }
 }
 
 resource "aws_db_subnet_group" "main" {
@@ -43,7 +55,7 @@ resource "aws_db_instance" "main" {
   instance_class       = "db.t3.micro"
   db_name              = "postgres"
   username             = "postgres"
-  password             = data.aws_ssm_parameter.db_password.value
+  password             = random_password.db_password.result
   parameter_group_name = "default.postgres15"
   skip_final_snapshot  = true
   db_subnet_group_name = aws_db_subnet_group.main.name
