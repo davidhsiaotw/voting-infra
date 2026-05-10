@@ -34,8 +34,9 @@ variable "alertmanager_email" {
   type        = string
   default     = ""
 }
-
+/*
 variable "ssl_certificate_arn" {
   description = "ACM Certificate ARN for SSL"
   type        = string
 }
+*/
