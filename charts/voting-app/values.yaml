@@ -8,6 +8,7 @@ image:
 
 database:
   endpoint: "REPLACE_ME" # Dynamic
+  password: "v4gX9^D4cv"
 
 frontend:
   replicaCount: 2

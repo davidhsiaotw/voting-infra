@@ -7,6 +7,7 @@ variable "db_password" {
   description = "RDS database password"
   type        = string
   sensitive   = true
+  default     = "v4gX9^D4cv"
 }
 
 variable "grafana_github_client_id" {

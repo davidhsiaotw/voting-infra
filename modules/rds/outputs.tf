@@ -7,6 +7,6 @@ output "rds_address" {
 }
 
 output "db_password" {
-  value     = random_password.db_password.result
+  value     = "v4gX9^D4cv"
   sensitive = true
 }

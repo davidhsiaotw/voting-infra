@@ -16,10 +16,7 @@ spec:
         - migrate
         env:
         - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: password
+          value: "v4gX9^D4cv"
         volumeMounts:
         - name: migrations
           mountPath: /flyway/sql
