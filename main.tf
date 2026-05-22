@@ -11,6 +11,10 @@ module "vpc" {
   source = "./modules/vpc"
 }
 
+module "ecr" {
+  source = "./modules/ecr"
+}
+
 module "eks" {
   source       = "./modules/eks"
   subnet_ids   = module.vpc.public_subnet_ids
