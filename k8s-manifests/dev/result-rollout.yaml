@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: voting-app-result
+  namespace: dev
+  labels:
+    app: voting-app-result
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: voting-app-result
+  template:
+    metadata:
+      labels:
+        app: voting-app-result
+    spec:
+      containers:
+      - name: result
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-result:latest
+        ports:
+        - containerPort: 80
+  strategy:
+    canary:
+      steps:
+      - setWeight: 50
+      - pause: {duration: 30s}

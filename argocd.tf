@@ -26,7 +26,10 @@ resource "null_resource" "argocd_cleanup" {
 
   depends_on = [
     helm_release.argocd,
-    helm_release.argo_rollouts
+    helm_release.argo_rollouts,
+    kubernetes_namespace.dev,
+    kubernetes_namespace.uat,
+    kubernetes_namespace.prod
   ]
 
   provisioner "local-exec" {
@@ -42,4 +45,65 @@ resource "null_resource" "argocd_cleanup" {
       kubectl get appprojects.argoproj.io -A -o name 2>/dev/null | xargs -I {} kubectl patch {} -p '{"metadata":{"finalizers":null}}' --type=merge || true
     EOT
   }
+}
+resource "helm_release" "argocd_apps" {
+  name       = "argocd-apps"
+  repository = "https://argoproj.github.io/argo-helm"
+  chart      = "argocd-apps"
+  namespace  = "argocd"
+
+  depends_on = [
+    helm_release.argocd,
+    kubernetes_namespace.dev,
+    kubernetes_namespace.uat,
+    kubernetes_namespace.prod
+  ]
+
+  values = [
+    <<-EOT
+    applications:
+      dev:
+        namespace: argocd
+        project: default
+        source:
+          repoURL: https://github.com/davidhsiaotw/voting-infra.git
+          targetRevision: HEAD
+          path: k8s-manifests/dev
+        destination:
+          server: https://kubernetes.default.svc
+          namespace: dev
+        syncPolicy:
+          automated:
+            prune: true
+            selfHeal: true
+      uat:
+        namespace: argocd
+        project: default
+        source:
+          repoURL: https://github.com/davidhsiaotw/voting-infra.git
+          targetRevision: HEAD
+          path: k8s-manifests/uat
+        destination:
+          server: https://kubernetes.default.svc
+          namespace: uat
+        syncPolicy:
+          automated:
+            prune: true
+            selfHeal: true
+      prod:
+        namespace: argocd
+        project: default
+        source:
+          repoURL: https://github.com/davidhsiaotw/voting-infra.git
+          targetRevision: HEAD
+          path: k8s-manifests/prod
+        destination:
+          server: https://kubernetes.default.svc
+          namespace: prod
+        syncPolicy:
+          automated:
+            prune: true
+            selfHeal: true
+    EOT
+  ]
 }
