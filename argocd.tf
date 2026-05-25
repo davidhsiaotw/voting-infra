@@ -36,16 +36,22 @@ resource "null_resource" "argocd_cleanup" {
     when    = destroy
     command = <<EOT
       aws eks update-kubeconfig --region ${self.triggers.region} --name ${self.triggers.cluster_name} || true
-      
-      # Delete all ingresses to ensure AWS Load Balancers are cleaned up
-      kubectl delete ingress --all --all-namespaces || true
-      
-      # Remove finalizers from ArgoCD resources
+
+      # 1. Remove finalizers from ArgoCD resources first so it stops self-healing/recreating resources
       kubectl get applications.argoproj.io -A -o name 2>/dev/null | xargs -I {} kubectl patch {} -p '{"metadata":{"finalizers":null}}' --type=merge || true
       kubectl get appprojects.argoproj.io -A -o name 2>/dev/null | xargs -I {} kubectl patch {} -p '{"metadata":{"finalizers":null}}' --type=merge || true
+
+      # 2. Delete all ingresses to ensure AWS Load Balancers are cleaned up by the AWS controller
+      kubectl delete ingress --all --all-namespaces || true
+
+      # 3. Force delete all pods in application namespaces to prevent stuck termination
+      for ns in dev uat prod; do
+        kubectl delete pods --all -n $ns --force --grace-period=0 || true
+      done
     EOT
   }
 }
+
 resource "helm_release" "argocd_apps" {
   name       = "argocd-apps"
   repository = "https://argoproj.github.io/argo-helm"
