@@ -17,7 +17,7 @@ spec:
     spec:
       initContainers:
       - name: flyway-init
-        image: flyway/flyway:11.20.3-alpine
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker:dev-2a0736d
         command:
         - sh
         - -c
@@ -30,7 +30,7 @@ spec:
           mountPath: /flyway/sql
       containers:
       - name: worker
-        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker:dev-cbe68d3
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker:dev-2a0736d
         envFrom:
         - secretRef:
             name: db-credentials
