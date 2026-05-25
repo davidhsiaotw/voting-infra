@@ -29,7 +29,8 @@ resource "null_resource" "argocd_cleanup" {
     helm_release.argo_rollouts,
     kubernetes_namespace.dev,
     kubernetes_namespace.uat,
-    kubernetes_namespace.prod
+    kubernetes_namespace.prod,
+    time_sleep.wait_for_alb_cleanup
   ]
 
   provisioner "local-exec" {
@@ -46,10 +47,17 @@ resource "null_resource" "argocd_cleanup" {
 
       # 3. Force delete all pods in application namespaces to prevent stuck termination
       for ns in dev uat prod; do
+        echo "forcing to delete $ns pods..."
         kubectl delete pods --all -n $ns --force --grace-period=0 || true
       done
     EOT
   }
+}
+
+resource "time_sleep" "wait_for_alb_cleanup" {
+  depends_on = [module.eks]
+  create_duration = "0s"
+  destroy_duration = "3m"
 }
 
 resource "helm_release" "argocd_apps" {
