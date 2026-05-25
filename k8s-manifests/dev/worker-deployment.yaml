@@ -15,26 +15,9 @@ spec:
       labels:
         app: voting-app-worker
     spec:
-      initContainers:
-      - name: flyway-init
-        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker:dev-2a0736d
-        command:
-        - sh
-        - -c
-        - "flyway -url=jdbc:postgresql://$DB_ENDPOINT/postgres -user=postgres -password=$DB_PASSWORD migrate"
-        envFrom:
-        - secretRef:
-            name: db-credentials
-        volumeMounts:
-        - name: flyway-sql
-          mountPath: /flyway/sql
       containers:
       - name: worker
         image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker:dev-2a0736d
         envFrom:
         - secretRef:
             name: db-credentials
-      volumes:
-      - name: flyway-sql
-        configMap:
-          name: db-schema
