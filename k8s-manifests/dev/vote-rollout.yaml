@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: vote
-        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-vote:dev-535ee70
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-vote:dev-cbe68d3
         ports:
         - containerPort: 80
   strategy:
