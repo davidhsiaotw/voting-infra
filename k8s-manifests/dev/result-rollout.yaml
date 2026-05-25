@@ -35,6 +35,9 @@ spec:
         image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-result:dev-45a93ce
         ports:
         - containerPort: 80
+        envFrom:
+        - secretRef:
+            name: db-credentials
   strategy:
     canary:
       steps:
