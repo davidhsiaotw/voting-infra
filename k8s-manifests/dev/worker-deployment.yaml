@@ -15,9 +15,26 @@ spec:
       labels:
         app: voting-app-worker
     spec:
+      initContainers:
+      - name: flyway-init
+        image: flyway/flyway:11.20.3-alpine
+        command:
+        - sh
+        - -c
+        - "flyway -url=jdbc:postgresql://$DB_ENDPOINT/postgres -user=postgres -password=$DB_PASSWORD migrate"
+        envFrom:
+        - secretRef:
+            name: db-credentials
+        volumeMounts:
+        - name: flyway-sql
+          mountPath: /flyway/sql
       containers:
       - name: worker
         image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker:dev-cbe68d3
         envFrom:
         - secretRef:
             name: db-credentials
+      volumes:
+      - name: flyway-sql
+        configMap:
+          name: db-schema

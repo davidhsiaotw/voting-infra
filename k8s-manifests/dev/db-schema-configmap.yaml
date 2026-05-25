@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-schema
+  namespace: dev
+data:
+  V1__Create_votes_table.sql: |
+    CREATE TABLE IF NOT EXISTS votes (
+      id VARCHAR(255) PRIMARY KEY,
+      vote VARCHAR(255) NOT NULL
+    );
