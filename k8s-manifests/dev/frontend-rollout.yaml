@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-frontend:dev-45a93ce
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-frontend:dev-535ee70
         ports:
         - containerPort: 80
   strategy:
