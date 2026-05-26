@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: worker
-        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker:prod-
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker:prod-v0.0.1
         envFrom:
         - secretRef:
             name: db-credentials
