@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote
+  namespace: uat
+  labels:
+    app: voting-app-vote
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  selector:
+    app: voting-app-vote
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: voting-app-vote
+  namespace: uat
+  labels:
+    app: voting-app-vote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: voting-app-vote
+  template:
+    metadata:
+      labels:
+        app: voting-app-vote
+    spec:
+      containers:
+      - name: vote
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-vote:dev-1b3d197
+        ports:
+        - containerPort: 80
+  strategy:
+    canary:
+      steps:
+      - setWeight: 50
+      - pause: {duration: 30s}

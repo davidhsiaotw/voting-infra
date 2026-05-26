@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migration
+  namespace: uat
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      containers:
+      - name: flyway
+        image: flyway/flyway:11.20.3-alpine
+        command:
+        - sh
+        - -c
+        - "flyway -url=jdbc:postgresql://$DB_ENDPOINT/postgres -user=postgres -password=$DB_PASSWORD migrate"
+        envFrom:
+        - secretRef:
+            name: db-credentials
+        volumeMounts:
+        - name: flyway-sql
+          mountPath: /flyway/sql
+      restartPolicy: Never
+      volumes:
+      - name: flyway-sql
+        configMap:
+          name: db-schema
