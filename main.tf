@@ -11,9 +11,9 @@ module "vpc" {
   source = "./modules/vpc"
 }
 
-module "ecr" {
-  source = "./modules/ecr"
-}
+# module "ecr" {
+#   source = "./modules/ecr"
+# }
 
 module "eks" {
   source       = "./modules/eks"
