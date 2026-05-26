@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: voting-app-worker
+  namespace: prod
+  labels:
+    app: voting-app-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: voting-app-worker
+  template:
+    metadata:
+      labels:
+        app: voting-app-worker
+    spec:
+      containers:
+      - name: worker
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-worker:dev-1b3d197
+        envFrom:
+        - secretRef:
+            name: db-credentials

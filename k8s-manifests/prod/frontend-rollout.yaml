@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: prod
+  labels:
+    app: voting-app-frontend
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  selector:
+    app: voting-app-frontend
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: voting-app-frontend
+  namespace: prod
+  labels:
+    app: voting-app-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: voting-app-frontend
+  template:
+    metadata:
+      labels:
+        app: voting-app-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-frontend:dev-1b3d197
+        ports:
+        - containerPort: 80
+  strategy:
+    canary:
+      steps:
+      - setWeight: 50
+      - pause: {duration: 30s}

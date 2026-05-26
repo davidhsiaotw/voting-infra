@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: qa-test
+  namespace: prod
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: qa-test
+        image: curlimages/curl:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            set -e
+            echo "Testing frontend service..."
+            curl -sSf http://frontend/ > /dev/null
+            echo "Frontend is successfully running and reachable."
+            
+            echo "Testing vote submission on the vote service..."
+            curl -sSf -X POST -H "Content-Type: application/json" -d '{"vote":"a"}' http://vote/api/vote
+            echo ""
+            echo "Vote successfully submitted!"
+      restartPolicy: Never
+  backoffLimit: 2

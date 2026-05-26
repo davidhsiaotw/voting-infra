@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: result
+  namespace: prod
+  labels:
+    app: voting-app-result
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  selector:
+    app: voting-app-result
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: voting-app-result
+  namespace: prod
+  labels:
+    app: voting-app-result
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: voting-app-result
+  template:
+    metadata:
+      labels:
+        app: voting-app-result
+    spec:
+      containers:
+      - name: result
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-result:dev-1b3d197
+        ports:
+        - containerPort: 80
+        envFrom:
+        - secretRef:
+            name: db-credentials
+  strategy:
+    canary:
+      steps:
+      - setWeight: 50
+      - pause: {duration: 30s}
