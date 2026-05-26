@@ -47,6 +47,15 @@ resource "null_resource" "argocd_cleanup" {
 
       # 3. Force delete all pods in application namespaces to prevent stuck termination
       for ns in dev uat prod; do
+        kubectl delete deployments --all -n $ns --force --grace-period=0 || true
+        kubectl delete statefulsets --all -n $ns --force --grace-period=0 || true
+        kubectl delete rollouts --all -n $ns --force --grace-period=0 || true
+        kubectl delete replicasets --all -n $ns --force --grace-period=0 || true
+
+        kubectl get pvc -n $ns -o name 2>/dev/null | xargs -I {} kubectl patch {} -n $ns -p '{"metadata":{"finalizers":null}}' --type=merge || true
+        kubectl delete pvc --all -n $ns --force --grace-period=0 || true
+
+        kubectl get pods -n $ns -o name 2>/dev/null | xargs -I {} kubectl patch {} -n $ns -p '{"metadata":{"finalizers":null}}' --type=merge || true
         echo "forcing to delete $ns pods..."
         kubectl delete pods --all -n $ns --force --grace-period=0 || true
       done
@@ -70,7 +79,8 @@ resource "helm_release" "argocd_apps" {
     helm_release.argocd,
     kubernetes_namespace.dev,
     kubernetes_namespace.uat,
-    kubernetes_namespace.prod
+    kubernetes_namespace.prod,
+    null_resource.argocd_cleanup
   ]
 
   values = [
