@@ -42,11 +42,12 @@ resource "null_resource" "argocd_cleanup" {
       kubectl get applications.argoproj.io -A -o name 2>/dev/null | xargs -I {} kubectl patch {} -p '{"metadata":{"finalizers":null}}' --type=merge || true
       kubectl get appprojects.argoproj.io -A -o name 2>/dev/null | xargs -I {} kubectl patch {} -p '{"metadata":{"finalizers":null}}' --type=merge || true
 
-      # 2. Delete all ingresses to ensure AWS Load Balancers are cleaned up by the AWS controller
-      kubectl delete ingress --all --all-namespaces || true
-
-      # 3. Force delete all pods in application namespaces to prevent stuck termination
+      # 2. Force delete all application resources in specific namespaces to prevent stuck termination
       for ns in dev uat prod; do
+        # Remove finalizers from ingresses so the AWS Load Balancer Controller doesn't get stuck
+        kubectl get ingress -n $ns -o name 2>/dev/null | xargs -I {} kubectl patch {} -n $ns -p '{"metadata":{"finalizers":null}}' --type=merge || true
+        kubectl delete ingress --all -n $ns --force --grace-period=0 || true
+
         kubectl delete deployments --all -n $ns --force --grace-period=0 || true
         kubectl delete statefulsets --all -n $ns --force --grace-period=0 || true
         kubectl delete rollouts --all -n $ns --force --grace-period=0 || true
