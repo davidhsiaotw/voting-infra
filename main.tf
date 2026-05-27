@@ -19,6 +19,10 @@ module "eks" {
   source       = "./modules/eks"
   subnet_ids   = module.vpc.public_subnet_ids
   lab_role_arn = data.aws_iam_role.lab_role.arn
+
+  depends_on = [
+    module.vpc
+  ]
 }
 
 module "rds" {
