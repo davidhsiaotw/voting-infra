@@ -29,15 +29,5 @@ resource "helm_release" "external_dns" {
     value = module.eks.cluster_name
   }
 
-  set {
-    name  = "serviceAccount.create"
-    value = "true"
-  }
-
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = var.external_dns_iam_role_arn
-  }
-
   depends_on = [module.eks]
 }
