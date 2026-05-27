@@ -29,5 +29,15 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = module.vpc.vpc_id
   }
 
+  set {
+    name  = "awsSTSRegion"
+    value = var.region
+  }
+
+  set {
+    name  = "hostNetwork"
+    value = "true"
+  }
+
   depends_on = [module.eks]
 }
