@@ -67,3 +67,16 @@ resource "aws_route53_record" "dev" {
     evaluate_target_health = true
   }
 }
+
+resource "aws_route53_record" "grafana" {
+  allow_overwrite = true
+  zone_id         = data.aws_route53_zone.main.zone_id
+  name            = "grafana.wyxiao.games"
+  type            = "A"
+
+  alias {
+    name                   = kubernetes_ingress_v1.voting_app_dev.status[0].load_balancer[0].ingress[0].hostname
+    zone_id                = "Z35SXDOTRQ7X7K" # ALB Hosted Zone ID for us-east-1
+    evaluate_target_health = true
+  }
+}

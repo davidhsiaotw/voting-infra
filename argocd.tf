@@ -31,6 +31,7 @@ resource "null_resource" "argocd_cleanup" {
     kubernetes_namespace.dev,
     kubernetes_namespace.uat,
     kubernetes_namespace.prod,
+    kubernetes_namespace.monitoring,
     time_sleep.wait_for_alb_cleanup,
     aws_acm_certificate.wildcard
   ]
@@ -45,7 +46,7 @@ resource "null_resource" "argocd_cleanup" {
       kubectl get appprojects.argoproj.io -A -o name 2>/dev/null | xargs -I {} kubectl patch {} -p '{"metadata":{"finalizers":null}}' --type=merge || true
 
       # 2. Force delete all application resources in specific namespaces to prevent stuck termination
-      for ns in dev uat prod; do
+      for ns in dev uat prod monitoring; do
         # Remove finalizers from ingresses so the AWS Load Balancer Controller doesn't get stuck
         # Patching the finalizers here ensures Terraform can delete it successfully without hanging.
         kubectl get ingress -n $ns -o name 2>/dev/null | xargs -I {} kubectl patch {} -n $ns -p '{"metadata":{"finalizers":null}}' --type=merge || true
