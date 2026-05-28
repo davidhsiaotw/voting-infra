@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: result
-        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-result:uat-6a5d22b
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-result:uat-867d51c
         ports:
         - containerPort: 80
         envFrom:
