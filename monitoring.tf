@@ -25,7 +25,7 @@ resource "helm_release" "kube_prometheus_stack" {
   chart      = "kube-prometheus-stack"
   namespace  = kubernetes_namespace.monitoring.metadata[0].name
   version    = "56.6.0"
-  timeout    = 900
+  timeout    = 420
 
   values = [
     <<-EOT
