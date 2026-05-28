@@ -15,3 +15,20 @@ variable "grafana_github_client_secret" {
   type        = string
   sensitive   = true
 }
+
+variable "alertmanager_smtp_host" {
+  description = "SMTP host for Alertmanager emails"
+  type        = string
+  default     = "smtp.gmail.com:587"
+}
+
+variable "alertmanager_smtp_auth_username" {
+  description = "SMTP username for Alertmanager"
+  type        = string
+}
+
+variable "alertmanager_smtp_auth_password" {
+  description = "SMTP password/app password for Alertmanager"
+  type        = string
+  sensitive   = true
+}

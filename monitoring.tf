@@ -29,6 +29,57 @@ resource "helm_release" "kube_prometheus_stack" {
 
   values = [
     <<-EOT
+    kubeControllerManager:
+      enabled: false
+
+    kubeScheduler:
+      enabled: false
+
+    # Add custom alerting rules for CPU and Memory
+    additionalPrometheusRulesMap:
+      resource-usage:
+        groups:
+          - name: host-resource-usage
+            rules:
+              - alert: HighCpuUsage
+                expr: 100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 0
+                for: 1m
+                labels:
+                  severity: critical
+                annotations:
+                  summary: "High CPU usage on {{ $labels.instance }}"
+                  description: "CPU usage is above 0% (current value: {{ $value }}%)"
+              - alert: HighMemoryUsage
+                expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 0
+                for: 1m
+                labels:
+                  severity: critical
+                annotations:
+                  summary: "High Memory usage on {{ $labels.instance }}"
+                  description: "Memory usage is above 0% (current value: {{ $value }}%)"
+
+    alertmanager:
+      enabled: true
+      config:
+        global:
+          smtp_smarthost: '${var.alertmanager_smtp_host}'
+          smtp_from: '${var.alertmanager_smtp_auth_username}'
+          smtp_auth_username: '${var.alertmanager_smtp_auth_username}'
+          smtp_auth_password: '${var.alertmanager_smtp_auth_password}'
+          smtp_require_tls: true
+        route:
+          group_by: ['alertname']
+          group_wait: 30s
+          group_interval: 5m
+          repeat_interval: 1h
+          receiver: 'email-notifications'
+        receivers:
+          - name: 'email-notifications'
+            email_configs:
+            - to: 'whsiao5@dons.usfca.edu'
+              send_resolved: true
+          - name: 'null'
+
     grafana:
       # Inject secrets as environment variables
       envValueFrom:
