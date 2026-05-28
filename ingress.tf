@@ -6,7 +6,6 @@ resource "kubernetes_ingress_v1" "voting_app_dev" {
       "alb.ingress.kubernetes.io/scheme"          = "internet-facing"
       "alb.ingress.kubernetes.io/target-type"     = "ip"
       "alb.ingress.kubernetes.io/listen-ports"    = "[{\"HTTP\": 80}, {\"HTTPS\": 443}]"
-      "alb.ingress.kubernetes.io/actions.ssl-redirect" = "{\"Type\": \"redirect\", \"RedirectConfig\": { \"Protocol\": \"HTTPS\", \"Port\": \"443\", \"StatusCode\": \"HTTP_301\"}}"
       "alb.ingress.kubernetes.io/ssl-redirect"    = "443"
       "alb.ingress.kubernetes.io/certificate-arn" = aws_acm_certificate.wildcard.arn
       "alb.ingress.kubernetes.io/group.name"      = "voting-app-group"
@@ -18,18 +17,6 @@ resource "kubernetes_ingress_v1" "voting_app_dev" {
     rule {
       host = "dev.wyxiao.games"
       http {
-        path {
-          path      = "/"
-          path_type = "Prefix"
-          backend {
-            service {
-              name = "ssl-redirect"
-              port {
-                name = "use-annotation"
-              }
-            }
-          }
-        }
         path {
           path      = "/"
           path_type = "Prefix"
