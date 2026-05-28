@@ -110,6 +110,13 @@ resource "helm_release" "kube_prometheus_stack" {
         auth:
           disable_login_form: true
 
+      additionalDataSources:
+        - name: Loki
+          type: loki
+          url: http://loki:3100
+          access: proxy
+          isDefault: false
+      
       ingress:
         enabled: true
         ingressClassName: alb
@@ -132,6 +139,34 @@ resource "helm_release" "kube_prometheus_stack" {
       prometheusSpec:
         # Retention and storage can be tuned here
         retention: 1d
+    EOT
+  ]
+
+  depends_on = [
+    kubernetes_namespace.monitoring,
+    helm_release.aws_load_balancer_controller
+  ]
+}
+
+resource "helm_release" "loki_stack" {
+  name       = "loki"
+  repository = "https://grafana.github.io/helm-charts"
+  chart      = "loki-stack"
+  namespace  = kubernetes_namespace.monitoring.metadata[0].name
+  version    = "2.10.2"
+  timeout    = 420
+
+  values = [
+    <<-EOT
+    loki:
+      enabled: true
+      persistence:
+        enabled: false
+        inMemory: true
+      config:
+        auth_enabled: false
+    promtail:
+      enabled: true
     EOT
   ]
 
