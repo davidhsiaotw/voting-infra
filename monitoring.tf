@@ -95,6 +95,8 @@ resource "helm_release" "kube_prometheus_stack" {
       grafana.ini:
         server:
           root_url: https://grafana.wyxiao.games
+        users:
+          auto_assign_org_role: Admin
         auth.github:
           enabled: true
           allow_sign_up: true
