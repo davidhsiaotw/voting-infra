@@ -167,6 +167,11 @@ resource "helm_release" "loki_stack" {
         auth_enabled: false
     promtail:
       enabled: true
+    grafana:
+      enabled: false
+      sidecar:
+        datasources:
+          enabled: false
     EOT
   ]
 
