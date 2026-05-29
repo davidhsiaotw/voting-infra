@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-frontend:uat-02d291e
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-frontend:uat-7b8ef75
         ports:
         - containerPort: 80
         readinessProbe:
