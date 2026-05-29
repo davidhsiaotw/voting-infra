@@ -3,11 +3,13 @@ kind: ConfigMap
 metadata:
   name: db-schema
   namespace: dev
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-weight: "-1"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 data:
   V1__Create_votes_table.sql: |
     CREATE TABLE IF NOT EXISTS votes (
       id VARCHAR(255) PRIMARY KEY,
       vote VARCHAR(255) NOT NULL
     );
-  V2__Add_created_at_to_votes.sql: |
-    ALTER TABLE votes ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
