@@ -35,6 +35,12 @@ spec:
         image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-vote:prod-v0.0.2
         ports:
         - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 2
+          periodSeconds: 5
   strategy:
     canary:
       steps:

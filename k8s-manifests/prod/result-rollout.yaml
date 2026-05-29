@@ -38,6 +38,12 @@ spec:
         envFrom:
         - secretRef:
             name: db-credentials
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 2
+          periodSeconds: 5
   strategy:
     canary:
       steps:
