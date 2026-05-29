@@ -13,3 +13,5 @@ data:
       id VARCHAR(255) PRIMARY KEY,
       vote VARCHAR(255) NOT NULL
     );
+  V2__Add_created_at_to_votes.sql: |
+    ALTER TABLE votes ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
