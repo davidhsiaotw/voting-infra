@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
       - name: flyway
-        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-schema:uat-02d291e
+        image: 471318789453.dkr.ecr.us-east-1.amazonaws.com/voting-app-schema:uat-7b8ef75
         command:
         - sh
         - -c
