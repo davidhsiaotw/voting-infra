@@ -3,11 +3,9 @@ kind: Job
 metadata:
   name: db-migration
   namespace: dev
-  labels:
-    migration-version: "2"
   annotations:
     argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   backoffLimit: 2
   template:
