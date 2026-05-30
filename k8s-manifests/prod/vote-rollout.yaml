@@ -37,7 +37,7 @@ spec:
         - containerPort: 80
         readinessProbe:
           httpGet:
-            path: /
+            path: /api/options
             port: 80
           initialDelaySeconds: 2
           periodSeconds: 5

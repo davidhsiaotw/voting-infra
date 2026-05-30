@@ -40,7 +40,7 @@ spec:
             name: db-credentials
         readinessProbe:
           httpGet:
-            path: /
+            path: /api/health
             port: 80
           initialDelaySeconds: 2
           periodSeconds: 5
