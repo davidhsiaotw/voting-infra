@@ -13,6 +13,7 @@ resource "aws_eks_node_group" "main" {
   node_role_arn   = var.lab_role_arn
   subnet_ids      = var.subnet_ids
   instance_types  = ["t3.medium"]
+  release_version = "1.35.0-20260520"
 
   scaling_config {
     desired_size = 3
